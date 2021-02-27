@@ -1,13 +1,15 @@
 #include<iostream>
 #include<Windows.h>
 #include<conio.h>
+#include<cstdlib>
+#include<cstring>
 #include "prepare.h"
 using namespace std;
 //运行界面
 void WordBook::Interface() {
 	l0:system("cls");
 	cout << "\t\t\t\t\t\t\t\t|~~~~~~~~~~~~~" << endl
-		<< "\t\t\t\t\t\t\t\t|Welcome!|" << endl
+		<< "\t\t\t\t\t\t\t\t|Welcome!            |" << endl
 		<< "\t\t\t\t\t\t\t\t|请选择功能:     \t\t|" << endl
 		<< "\t\t\t\t\t\t\t\t|1.添加单词       \t\t|" << endl
 		<< "\t\t\t\t\t\t\t\t|2.查询单词       \t\t|" << endl
@@ -15,7 +17,8 @@ void WordBook::Interface() {
 		<< "\t\t\t\t\t\t\t\t|4.查询所有分组\t\t|" << endl
 		<< "\t\t\t\t\t\t\t\t|5.添加释义       \t\t|" << endl
 		<< "\t\t\t\t\t\t\t\t|6.添加例句       \t\t|" << endl
-		<< "\t\t\t\t\t\t\t\t|7.退出              \t\t|" << endl;
+		<< "\t\t\t\t\t\t\t\t|7.退出              \t\t|" << endl
+		<< "\t\t\t\t\t\t\t\t------------------\t\t-";
 	int key = _getch();
 	switch (key) {
 	case 49: {
@@ -29,6 +32,7 @@ void WordBook::Interface() {
 	}break;
 	case 51: {
 		char reason[30];
+		cin >> reason;
 		WordBook::Add_Group(reason);
 	}
 	case 52: WordBook::All_Group(); break;
@@ -55,7 +59,22 @@ void WordBook::Search(char name[20]) {
 
 }
 void WordBook::Add_Group(char reason[30]) {
-
+	Group* head = NULL;
+	head = WordBook::FileRead(head);
+	int tid = 1;
+	Group* p = head;
+	while (p->next != NULL) {
+		p = p->next;
+		tid += 1;
+	}
+	Group* tp = new Group;
+	tp = p->next;
+	tp->id = tid;
+	strcpy(tp->reason, reason);
+	tp->next = NULL;
+	cout << "Add successfully!";
+	delete tp;
+	delete p;
 }
 void WordBook::All_Group() {
 
@@ -65,4 +84,23 @@ void WordBook::Meaning_Add(char name[20], char meaning[30]) {
 }
 void WordBook::Sentence_Add(char name[20], char sentence[60]) {
 
+}
+Group* WordBook::FileRead(Group* head) {
+	FILE* pfile = fopen("D:\\MyCode\\Word.docx", "r");
+	if (pfile == NULL)
+		cout << "Error!";
+	else {
+		Group* p = new Group;
+		while (fscanf(pfile, "%d %s", &p->id, p->reason) != EOF) {
+			Word* t = new Word;
+			while (fscanf(pfile, "%s %s %s", t->word_name, t->meaning,
+				t->example_sentence) != EOF) {
+				*(t->next) = p->word;
+				p->word = *t;
+			}
+			p->next = head;
+			head = p;
+		}
+	}
+	return head;
 }

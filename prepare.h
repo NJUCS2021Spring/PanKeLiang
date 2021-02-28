@@ -1,9 +1,9 @@
 #pragma once
 struct Word {
-	char word_name[20];
-	int group_id[10];
-	char meaning[30];
-	char example_sentence[60];
+	char word_name[20] = {'\0'};
+	int group_id[10] = { 0 };
+	char meaning[30] = { '\0' };
+	char example_sentence[60] = { '\0' };
 	Word* next;
 };
 struct Group {
@@ -22,7 +22,7 @@ public:
 	void All_Group();//查看所有分组
 	void Meaning_Add(char name[20], char meaning[30]);//添加释义
 	void Sentence_Add(char name[20], char sentence[60]);//添加例句
-	void SaveWord(Word* control);//存储单词到文件
+	void SaveWord(Group* head);//存储单词到文件
 	Group* FileRead(Group* head);//从文件中写入
 	void Interface();//运行界面
-};
+}A;
